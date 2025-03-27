@@ -1,91 +1,93 @@
 ### 房价预测竞赛的小记录
 
-libs.py 用于引用第三方库  
-data_preprocessing.py 用于数据预处理与特征工程  
-tuning.py 用于优化模型的超参数(利用 optuna 库实现)  
-main.py 用于最终模型的搭建和预测，将结果保存到 CSV 文件中  
+```libs.py``` 用于引用第三方库  
+```data_preprocessing.py``` 用于数据预处理与特征工程  
+```tuning.py``` 用于优化模型的超参数(利用 ```optuna``` 库实现)  
+```main.py``` 用于最终模型的搭建和预测，将结果保存到 CSV 文件中  
 **下面逐步还原项目流程**
 
 ### 1. 各个特征的简单描述
-- **MSSubClass**: 房屋类型（例如1层、2层房屋等）。
-- **MSZoning**: 土地划分类型（例如住宅区、商业区等）。
-- **LotFrontage**: 房屋前面的街道长度（以英尺为单位）。
-- **LotArea**: 土地面积（以平方英尺为单位）。
-- **Street**: 道路类型（例如主街或小街）。
-- **Alley**: 小巷类型（如无小巷、铝制小巷等）。
-- **LotShape**: 描述土地的形状。
-- **LandContour**: 描述土地的地形状况。
-- **Utilities**: 公共设施类型（如全电、全燃气等）。
-- **LotConfig**: 土地配置（如角地、内地等）。
-- **LandSlope**: 地形坡度（如平地、陡坡等）。
-- **Neighborhood**: 房屋所在的邻里区域。
-- **Condition1**: 房屋附近的道路状况。
-- **Condition2**: 其他道路条件（如果有）。
-- **BldgType**: 建筑类型（如独立式、连排等）。
-- **HouseStyle**: 房屋样式（如1层、2层等）。
-- **OverallQual**: 房屋的整体质量评分（1到10）。
-- **OverallCond**: 房屋的整体状况评分（1到10）。
-- **YearBuilt**: 房屋建造年份。
-- **YearRemodAdd**: 最后翻修年份。
-- **RoofStyle**: 屋顶类型（如平顶、坡顶等）。
-- **RoofMatl**: 屋顶材料（如沥青、木材等）。
-- **Exterior1st**: 房屋外部材料的类型（主要材料）。
-- **Exterior2nd**: 房屋外部材料的第二种类型（如果有的话）。
-- **MasVnrType**: 房屋外墙的面板类型（如石材、砖材等）。
-- **MasVnrArea**: 房屋外墙面板的面积（以平方英尺为单位）。
-- **ExterCond**: 外部材料状况。
-- **ExterQual**: 外部材料质量。
-- **Foundation**: 基础类型（如混凝土、砖石等）。
-- **BsmtQual**: 地下室高度质量。
-- **BsmtCond**: 地下室状况。
-- **BsmtExposure**: 地下室外部暴露程度。
-- **BsmtFinType1**: 地下室的第一个完工类型。
-- **BsmtFinSF1**: 地下室完工部分的面积。
-- **BsmtFinType2**: 地下室的第二个完工类型（如果有）。
-- **BsmtFinSF2**: 第二个地下室完工部分的面积。
-- **BsmtUnfSF**: 地下室未完工部分的面积。
-- **TotalBsmtSF**: 地下室的总面积。
-- **Heating**: 供暖类型（如燃气、电力等）。
-- **HeatingQC**: 供暖质量和条件。
-- **CentralAir**: 是否有中央空调（Yes/No）。
-- **Electrical**: 电力系统类型。
-- **1stFlrSF**: 一楼面积。
-- **2ndFlrSF**: 二楼面积。
-- **LowQualFinSF**: 低质量完工的面积。
-- **GrLivArea**: 地面上生活区域的面积。
-- **BsmtFullBath**: 地下室内完整卫生间的数量。
-- **BsmtHalfBath**: 地下室的半卫生间数量。
-- **FullBath**: 完整卫生间数量。
-- **HalfBath**: 半卫生间数量。
-- **BedroomAbvGr**: 地面层以上的卧室数量。
-- **KitchenAbvGr**: 地面层以上的厨房数量。
-- **KitchenQual**: 厨房质量。
-- **TotRmsAbvGrd**: 地面层以上的总房间数量。
-- **Functional**: 房屋的功能类型（如标准、损坏等）。
-- **Fireplaces**: 壁炉数量。
-- **FireplaceQu**: 壁炉质量。
-- **GarageType**: 车库类型（如附加车库、独立车库等）。
-- **GarageYrBlt**: 车库建造的年份。
-- **GarageFinish**: 车库完工状态。
-- **GarageCars**: 车库的汽车容量。
-- **GarageArea**: 车库面积。
-- **GarageQual**: 车库质量。
-- **GarageCond**: 车库状况。
-- **PavedDrive**: 道路是否铺设（Yes/No）。
-- **WoodDeckSF**: 木质露台的面积。
-- **OpenPorchSF**: 开放式门廊面积。
-- **EnclosedPorch**: 封闭式门廊面积。
-- **3SsnPorch**: 三季门廊面积。
-- **ScreenPorch**: 屏风门廊面积。
-- **PoolArea**: 游泳池面积。
-- **PoolQC**: 游泳池质量。
-- **Fence**: 围栏类型。
-- **MiscFeature**: 其他附加功能（如游泳池、网球场等）。
-- **MiscVal**: 其他附加功能的价值。
-- **MoSold**: 销售月份。
-- **YrSold**: 销售年份。
-- **SaleType**: 销售类型（如正常、拍卖等）。
-- **SaleCondition**: 销售条件（如正常、延期等）。
+| 特征名  | 简单描述  |
+|------|------|
+| **MSSubClass** | 房屋类型（例如1层、2层房屋等） |
+| **MSZoning** | 土地划分类型（例如住宅区、商业区等） |
+| **LotFrontage** | 房屋前面的街道长度（以英尺为单位 |
+| **LotArea** | 土地面积（以平方英尺为单位） |
+| **Street** | 道路类型（例如主街或小街） |
+| **Alley** | 小巷类型（如无小巷、铝制小巷等） |
+| **LotShape** | 描述土地的形状 |
+| **LandContour** | 描述土地的地形状况 |
+| **Utilities** | 公共设施类型（如全电、全燃气等） |
+| **LotConfig** | 土地配置（如角地、内地等） |
+| **LandSlope** | 地形坡度（如平地、陡坡等） |
+| **Neighborhood** | 房屋所在的邻里区域 |
+| **Condition1** | 房屋附近的道路状况 |
+| **Condition2** | 其他道路条件（如果有） |
+| **BldgType** | 建筑类型（如独立式、连排等） |
+| **HouseStyle** | 房屋样式（如1层、2层等） |
+| **OverallQual** | 房屋的整体质量评分（1到10） |
+| **OverallCond** | 房屋的整体状况评分（1到10） |
+| **YearBuilt** | 房屋建造年份 |
+| **YearRemodAdd** | 最后翻修年份 |
+| **RoofStyle** | 屋顶类型（如平顶、坡顶等） |
+| **RoofMatl** | 屋顶材料（如沥青、木材等） |
+| **Exterior1st** | 房屋外部材料的类型（主要材料） |
+| **Exterior2nd** | 房屋外部材料的第二种类型（如果有的话） |
+| **MasVnrType** | 房屋外墙的面板类型（如石材、砖材等） |
+| **MasVnrArea** | 房屋外墙面板的面积（以平方英尺为单位） |
+| **ExterCond** | 外部材料状况 |
+| **ExterQual** | 外部材料质量 |
+| **Foundation** | 基础类型（如混凝土、砖石等） |
+| **BsmtQual** | 地下室高度质量 |
+| **BsmtCond** | 地下室状况 |
+| **BsmtExposure** | 地下室外部暴露程度 |
+| **BsmtFinType1** | 地下室的第一个完工类型 |
+| **BsmtFinSF1** | 地下室完工部分的面积 |
+| **BsmtFinType2** | 地下室的第二个完工类型（如果有） |
+| **BsmtFinSF2** | 第二个地下室完工部分的面积 |
+| **BsmtUnfSF** | 地下室未完工部分的面积 |
+| **TotalBsmtSF** | 地下室的总面积 |
+| **Heating** | 供暖类型（如燃气、电力等） |
+| **HeatingQC** | 供暖质量和条件 |
+| **CentralAir** | 是否有中央空调（Yes/No） |
+| **Electrical** | 电力系统类型 |
+| **1stFlrSF** | 一楼面积 |
+| **2ndFlrSF** | 二楼面积 |
+| **LowQualFinSF** | 低质量完工的面积 |
+| **GrLivArea** | 地面上生活区域的面积 |
+| **BsmtFullBath** | 地下室内完整卫生间的数量 |
+| **BsmtHalfBath** | 地下室的半卫生间数量 |
+| **FullBath** | 完整卫生间数量 |
+| **HalfBath** | 半卫生间数量 |
+| **BedroomAbvGr** | 地面层以上的卧室数量 |
+| **KitchenAbvGr** | 地面层以上的厨房数量 |
+| **KitchenQual** | 厨房质量 |
+| **TotRmsAbvGrd** | 地面层以上的总房间数量 |
+| **Functional** | 房屋的功能类型（如标准、损坏等） |
+| **Fireplaces** | 壁炉数量 |
+| **FireplaceQu** | 壁炉质量 |
+| **GarageType** | 车库类型（如附加车库、独立车库等） |
+| **GarageYrBlt** | 车库建造的年份 |
+| **GarageFinish** | 车库完工状态 |
+| **GarageCars** | 车库的汽车容量 |
+| **GarageArea** | 车库面积 |
+| **GarageQual** | 车库质量 |
+| **GarageCond** | 车库状况 |
+| **PavedDrive** | 道路是否铺设（Yes/No） |
+| **WoodDeckSF** | 木质露台的面积 |
+| **OpenPorchSF** | 开放式门廊面积 |
+| **EnclosedPorch** | 封闭式门廊面积 |
+| **3SsnPorch** | 三季门廊面积 |
+| **ScreenPorch** | 屏风门廊面积 |
+| **PoolArea** | 游泳池面积 |
+| **PoolQC** | 游泳池质量 |
+| **Fence** | 围栏类型 |
+| **MiscFeature** | 其他附加功能（如游泳池、网球场等） |
+| **MiscVal** | 其他附加功能的价值 |
+| **MoSold** | 销售月份 |
+| **YrSold** | 销售年份 |
+| **SaleType** | 销售类型（如正常、拍卖等） |
+| **SaleCondition** | 销售条件（如正常、延期等） |
 
 ### 2. 特征的初步分类
 
@@ -165,7 +167,7 @@ assert numerical_features.sort() == (discrete_numerical_features + continuous_nu
 
 ### 3. 缺失值处理
 
-可以先确认每个特征的缺失值个数，这里对 pandas.DataFrame 类数据使用 .isnull() 方法判断是否为空，空映射到 1，非空映射到 0
+可以先确认每个特征的缺失值个数，这里对```pandas.DataFrame```类数据使用```.isnull()```方法判断是否为空，空映射到```1```，非空映射到```0```。
 
 ```python
 # train_df 是用于训练的数据，为 pandas.DataFrame 类
@@ -178,25 +180,25 @@ missing["percent"] = missing[0:] / 1460
 print(missing.style.background_gradient('viridis'))  # 一种好看的输出格式，不喜欢的话可以直接print(missing)
 ```
 
-结果显示，特征 ['PoolQC', 'MiscFeature', 'Alley', 'Fence'] 的缺失值较多，达到 80% 以上，**可以考虑直接删除这些特征**。
+结果显示，特征 ```['PoolQC', 'MiscFeature', 'Alley', 'Fence']``` 的缺失值较多，达到 80% 以上，**可以考虑直接删除这些特征**。
   
-对缺失值进行填充，**对全体数值特征，空填充为 0；对分类特征，空填充为 'Do_not_have_this_feature'**   
-**这里说明一下，因为该数据中的全体数值特征都是非负的，且均有现实的物理意义，于是可以将空直接替换成0*
+对缺失值进行填充，**对全体数值特征，空填充为 ```0```；对分类特征，空填充为 ```'Do_not_have_this_feature'```**   
+**这里说明一下，因为该数据中的全体数值特征都是非负的，且均有现实的物理意义，于是可以将空直接替换成```0```*
 
 ### 4. 删除偏离数据
 
 绘制数值特征与售价的散点图来观察图像是否具备线性关系，将明显偏离线性关系的数据删除。  
   
-**绘制散点图利用seaborn库的scatterplot()函数实现。**  
-参数 x=var 指定散点图的 x 轴数据的数据名，可以是一个 String(就是个列名，例如 train_df['var']) 或一个 pandas.Series 类。  
+**绘制散点图利用```seaborn```库的```scatterplot()```函数实现。**  
+参数 ```x=var``` 指定散点图的 ```x``` 轴数据的数据名，可以是一个 ```String```(就是个列名，例如 ```train_df['var']```) 或一个 ```pandas.Series``` 类。  
   
-参数 y='SalePrice' 指定散点图的 y 轴数据的数据名，是目标特征的名称(train_df['SalePrice'])  
+参数 ```y='SalePrice'``` 指定散点图的 ```y``` 轴数据的数据名，是目标特征的名称(```train_df['SalePrice']```)  
   
-参数 data=train_df 指定要绘制的数据集。train_df 是一个 pandas.DataFrame，包含了绘制散点图所需的数据。  
+参数 ```data=train_df``` 指定要绘制的数据集。```train_df``` 是一个 ```pandas.DataFrame```，包含了绘制散点图所需的数据。  
   
-ax=subplot 参数用于指定绘图的轴。通常情况下，这个参数与 matplotlib 的 subplots() 一起使用，允许你在特定的子图（subplot）中绘制图形。  
+```ax=subplot``` 参数用于指定绘图的轴。通常情况下，这个参数与 ```matplotlib``` 的 ```subplots()``` 一起使用，允许你在特定的子图（subplot）中绘制图形。  
   
-hue='SalePrice' 参数用于根据某个变量来调节点的颜色。在这里，hue='SalePrice' 表示根据 SalePrice 列的值来设置每个散点的颜色。  
+```hue='SalePrice'``` 参数用于根据某个变量来调节点的颜色。在这里，```hue='SalePrice'``` 表示根据 SalePrice 列的值来设置每个散点的颜色。  
 
 ```python
 fig, ax = plt.subplots(12, 3, figsize=(23, 60))
@@ -204,7 +206,7 @@ for var, subplot in zip(numerical_features, ax.flatten()):
     sns.scatterplot(x=var, y='SalePrice', data=train_df, ax=subplot, hue='SalePrice')
 ```
 
-其中，可以明显发现特征['1stFlrSF', 'GarageArea', 'GrLivArea', 'OverallQual', 'TotRmsAbvGrd', 'TotalBsmtSF']是和售价有线性关系的。进一步观察图像发现除了特征OverallQual外，其余特征都有明显的偏离点。下面将对这些点进行删除。
+其中，可以明显发现特征 ```['1stFlrSF', 'GarageArea', 'GrLivArea', 'OverallQual', 'TotRmsAbvGrd', 'TotalBsmtSF']``` 是和售价有线性关系的。进一步观察图像发现除了特征 OverallQual 外，其余特征都有明显的偏离点。下面将对这些点进行删除。
 
 ```python
 train_df = train_df.drop(
@@ -242,22 +244,22 @@ train_df = train_df.drop(
 
 这一步是查看数值特征和目标特征的相关性，可以很好的反应线性关系。  
   
-**绘制热力图利用 seaborn 的 heatmap() 函数来实现，用于可视化相关性矩阵。**  
-第一个参数correlation_train 是绘制热力图的输入数据，通常是一个二维数组（如 pandas.DataFrame）或矩阵。  
+**绘制热力图利用 ```seaborn``` 的 ```heatmap()``` 函数来实现，用于可视化相关性矩阵。**  
+第一个参数 ```correlation_train``` 是绘制热力图的输入数据，通常是一个二维数组（如 ```pandas.DataFrame```）或矩阵。  
   
-参数annot=True 用于控制是否在每个单元格中显示数值。如果设置为 True，这里会在热力图的每个小方格中显示相关系数。  
+参数 ```annot=True``` 用于控制是否在每个单元格中显示数值。如果设置为 ```True```，这里会在热力图的每个小方格中显示相关系数。  
   
-参数fmt='.1f' 用于控制显示数值的格式。这里的 '.1f' 指定数值以浮动格式显示，保留 1 位小数。  
+参数 ```fmt='.1f'``` 用于控制显示数值的格式。这里的 ```'.1f'``` 指定数值以浮动格式显示，保留 1 位小数。  
   
-参数cmap='coolwarm' 指定热力图的颜色映射(即色阶)。'coolwarm' 是一个常见的颜色映射方案，通常用于显示有负相关和正相关的数据。颜色从蓝色(代表负相关)到红色(代表正相关)渐变，中间是白色(代表接近零的相关性)。还可以选择其他颜色映射方案，如 'viridis', 'inferno', 'Blues'。  
+参数 ```cmap='coolwarm'``` 指定热力图的颜色映射(即色阶)。```'coolwarm'``` 是一个常见的颜色映射方案，通常用于显示有负相关和正相关的数据。颜色从蓝色(代表负相关)到红色(代表正相关)渐变，中间是白色(代表接近零的相关性)。还可以选择其他颜色映射方案，如 ```'viridis', 'inferno', 'Blues'```。  
   
-参数square=True 用于控制热力图的形状。如果设置为 True，热力图将强制成为一个正方形，使得行数和列数相等时，图形会看起来像一个正方形。绘制相关系数矩阵通常会设定为 True。  
+参数 ```square=True``` 用于控制热力图的形状。如果设置为 ```True```，热力图将强制成为一个正方形，使得行数和列数相等时，图形会看起来像一个正方形。绘制相关系数矩阵通常会设定为 ```True```。  
   
-参数mask=mask 是一个布尔型矩阵，指定哪些值应被隐藏。如果 mask 是一个与数据矩阵同样形状的布尔数组，True 的位置将隐藏相应的热力图单元格。通常用于遮蔽一些不需要显示的部分，比如在对相关性矩阵进行可视化时，可以选择隐藏上三角矩阵，因为相关性矩阵是对称的。  
+参数 ```mask=mask``` 是一个布尔型矩阵，指定哪些值应被隐藏。如果 ```mask``` 是一个与数据矩阵同样形状的布尔数组，```True``` 的位置将隐藏相应的热力图单元格。通常用于遮蔽一些不需要显示的部分，比如在对相关性矩阵进行可视化时，可以选择隐藏上三角矩阵，因为相关性矩阵是对称的。  
   
-参数linewidths=1 用于控制每个单元格之间的线条宽度。默认线条宽度为 0，如果设置为 1，则会在热力图的单元格之间显示 1 像素的边框线。  
+参数 ```linewidths=1``` 用于控制每个单元格之间的线条宽度。默认线条宽度为 ```0```，如果设置为 ```1```，则会在热力图的单元格之间显示 1 像素的边框线。  
   
-参数cbar=False 用于控制是否显示颜色条(colorbar)。如果设置为 True，则会显示一个颜色条，用于表示颜色和数据值之间的映射关系。False 则不显示颜色条。
+参数 ```cbar=False``` 用于控制是否显示颜色条(colorbar)。如果设置为 ```True```，则会显示一个颜色条，用于表示颜色和数据值之间的映射关系。```False``` 则不显示颜色条。
 
 ```python
 sns.set(font_scale=1.1)
@@ -277,26 +279,26 @@ sns.heatmap(
 ```
 
 相关系数绝对值较高(>=0.5)的几个数值特征(降序排列)，分别是  
-['OverallQual', 'GrLivArea', 'TotalBsmtSF', '1stFlrSF', 'FullBath', 'GarageArea', 'GarageCars', 'YearBulit', 'YearRemodAdd', 'MasVnrArea', 'TotRmsAbvGrd', 'Fireplaces', 'GarageYrBlt']  
+```['OverallQual', 'GrLivArea', 'TotalBsmtSF', '1stFlrSF', 'FullBath', 'GarageArea', 'GarageCars', 'YearBulit', 'YearRemodAdd', 'MasVnrArea', 'TotRmsAbvGrd', 'Fireplaces', 'GarageYrBlt']```  
 可以发现比起画散点图，利用相关系数矩阵更能量化与目标特征的线性关系，可以捕获到更多有价值的特征。
 
 ### 6. 计算全部特征的互信息
 
 计算全部特征与目标特征的互信息，可以很好的反应二者的非线性关系。  
   
-对于数据特征，需要先填充空值，使用 pandas.DataFrame.fillna(0) 方法将 pandas.DataFrame 中全部空值填充为 0。  
+对于数据特征，需要先填充空值，使用 ```pandas.DataFrame.fillna(0)``` 方法将 ```pandas.DataFrame``` 中全部空值填充为 ```0```。  
   
-对于分类特征，可以使用 pandas.Series.factorize() 方法针对 pandas.DataFrame[categorical_features] 的每一个特征(Series)实现一个到整数集的映射。
+对于分类特征，可以使用 ```pandas.Series.factorize()``` 方法针对 ```pandas.DataFrame[categorical_features]``` 的每一个特征(```Series```)实现一个到整数集的映射。
   
-.factorize() 方法会返回两个值。第一个值是数组，是原数组经过映射后形成的整数数组。  
-第二个值是类别列表，包含所有唯一分类值的列表，用于反向映射(这里因为无需反向映射，所以使用 _ 忽略)。  
+```.factorize()``` 方法会返回两个值。第一个值是数组，是原数组经过映射后形成的整数数组。  
+第二个值是类别列表，包含所有唯一分类值的列表，用于反向映射(这里因为无需反向映射，所以使用 ```_``` 忽略)。  
   
-计算互信息使用 sklearn.feature_selection.mutual_info_regression() 函数实现，需要输入的第一个参数为输入特征(可以是一个 DataFrame)，第二个参数是目标特征(Serise)。  
+计算互信息使用 ```sklearn.feature_selection.mutual_info_regression()``` 函数实现，需要输入的第一个参数为输入特征(可以是一个 ```DataFrame```)，第二个参数是目标特征(```Serise```)。  
 ** 要注意数据中不能出现空数据*
   
-参数 random_state=1 是为了确保计算结果的可重复性。  
+参数 ```random_state=1``` 是为了确保计算结果的可重复性。  
   
-mutual_info_regression 会返回一个与输入特征对应的互信息得分数组。
+```mutual_info_regression``` 会返回一个与输入特征对应的互信息得分数组。
 
 ```python
 # 计算数值特征与目标特征的互信息
@@ -324,7 +326,7 @@ pd.DataFrame(mutual_info.sort_values(ascending=False), columns = ["Categorical_F
 | MasVnrArea | 0.091479 | 0.5 |
   
 尤其是特征 MasVnrArea，这可能说明这个特征更容易体现与目标特征的线性关系。  
-根据输出结果发现，这些特征['MoSold', 'BsmtFinSF2', '3SsnPorch', 'YrSold', 'Street', 'Condition2', 'PoolQC', 'Utilities']的互信息为 0，说明这些特征可能与目标信息呈现完全独立的关系，**可以考虑直接删除这些特征**。
+根据输出结果发现，这些特征```['MoSold', 'BsmtFinSF2', '3SsnPorch', 'YrSold', 'Street', 'Condition2', 'PoolQC', 'Utilities']```的互信息为 0，说明这些特征可能与目标信息呈现完全独立的关系，**可以考虑直接删除这些特征**。
 
 ### 7. 添加新特征
 
@@ -463,7 +465,7 @@ tree_preprocessor = ColumnTransformer(
 
 **生成一个线性预处理器**
 
-对线性模型和支持向量机(SVR)进行额外的预处理工作，通过对数值特征进行缩放并处理偏态(skewness)来提高模型的性能，并加快模型训练时的收敛速度。同时使用 TransformedTargetRegressor 对目标变量进行变换，进一步提高模型的性能。  
+对线性模型和支持向量机(SVR)进行额外的预处理工作，通过对数值特征进行缩放并处理偏态(skewness)来提高模型的性能，并加快模型训练时的收敛速度。同时使用 ```TransformedTargetRegressor``` 对目标变量进行变换，进一步提高模型的性能。  
   
 **偏态（Skewness）** 
   
@@ -565,13 +567,13 @@ linear_preprocessor = ColumnTransformer(
 
 ### 9. 模型优化
 
-模型优化使用optuna库进行，该库使用起来十分方便，只需规定需要优化的超参数，然后使用交叉验证的方式优化即可，期间还可以结合逐步网格搜索进一步提升优化效率。
+模型优化使用```optuna```库进行，该库使用起来十分方便，只需规定需要优化的超参数，然后使用交叉验证的方式优化即可，期间还可以结合逐步网格搜索进一步提升优化效率。
 
 ### 10. 模型搭建
 
 基础的回归模型可以直接调用第三方库，结合管道可以很方便的将这些基础模型统合成一个大型的模型。  
   
-之后就是各种模型的拼接了，使用staking统合所有模型的输出结果，将结果作为特征输入到Lasso中，然后输出最终结果。
+之后就是各种模型的拼接了，使用 staking 统合所有模型的输出结果，将结果作为特征输入到 Lasso 中，然后输出最终结果。
 
 
 
