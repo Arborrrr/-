@@ -451,7 +451,7 @@ ordinal_transformer = Pipeline(
 
 **生成一个树预处理器**
 
-生成一个对对全体特征进行数据预处理的总管道，将分别针对三类特征编码，保证每个特征都是数值型的。
+生成一个对树模型进行数据预处理的预处理器，主要是针对三类特征进行编码，保证最终输入树模型的每个特征都是非空且为数值型的。
 
 ```python
 tree_preprocessor = ColumnTransformer(
@@ -465,7 +465,7 @@ tree_preprocessor = ColumnTransformer(
 
 **生成一个线性预处理器**
 
-对线性模型和支持向量机(SVR)进行额外的预处理工作，通过对数值特征进行缩放并处理偏态(skewness)来提高模型的性能，并加快模型训练时的收敛速度。同时使用 ```TransformedTargetRegressor``` 对目标变量进行变换，进一步提高模型的性能。  
+生成一个对线性模型进行数据预处理的预处理器，通过对数值特征进行缩放并处理偏态(skewness)来提高模型的性能，并加快模型训练时的收敛速度。同时使用 ```TransformedTargetRegressor``` 对目标变量进行变换，进一步提高模型的性能。  
   
 **偏态（Skewness）** 
   
@@ -519,7 +519,7 @@ skew_features = pd.DataFrame({'Skew' : skew_features})
 skew_features.style.background_gradient('rocket')
 ```
 
-输出所有值大于1的特征，加入到 skewed_features。
+输出所有值大于1的特征形成一个特征列表，将 skewed_features 更新为该列表。
 
 ```python
 # 在连续特征中寻找偏态特征，对这些特征进行特殊修正处理
